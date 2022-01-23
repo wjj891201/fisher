@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, render_template, flash
 from app.forms.book import SearchForm
 
 from app.libs.helper import is_isbn_or_key
@@ -18,11 +18,24 @@ def search():
         isbn_or_key = is_isbn_or_key(q)
         if isbn_or_key == 'isbn':
             result = YuShuBook.search_by_isbn(q)
+            # result = BookViewModel.package_single(result, q)
         else:
             result = YuShuBook.search_by_keyword(q, page)
-        return jsonify(result)
+            # result = BookViewModel.package_collection(result, q)
+        # return jsonify(result)
     else:
-        return jsonify(form.errors)
+        flash('搜索的关键字不符合要求，请重新输入关键字')
+        # return jsonify(form.errors)
+
+    return render_template('search_result.html')
+
+
+@web.route('/book/<isbn>/detail')
+def book_detail(isbn):
+    yushu_book = YuShuBook()
+    info = yushu_book.search_by_isbn(isbn)
+    return render_template('book_detail.html', book=info[0], wishes=[], gifts=[])
+
 
 # @app.route('/hello')
 # def hello():
@@ -35,3 +48,13 @@ def search():
 #     # return '<html></html>', 301, headers
 #     return 'Hello, QiYue3'
 # app.add_url_rule('/hello', view_func=hello)
+
+
+@web.route('/test')
+def test():
+    r = {
+        'name': 'wjp',
+        'age': 18
+    }
+    flash('hello,qiyue')
+    return render_template('test.html', data=r)
