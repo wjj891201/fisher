@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block content %}
+    {{ super() }}
+    吴莫愁{{ data.age }}
+    {% if data.age == 18 %}
+        {{ data.name }}
+    {% endif %}
+    {% set meaasges = get_flashed_messages() %}
+    {{ meaasges }}
+    {% for foo in [1,2,3] %}
+        {{ foo }}
+    {% endfor %}
+{% endblock %}
